@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSR-352 Batch Tool - API Documentation</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #2563eb; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; }
+        .module { margin: 20px 0; padding: 20px; border: 1px solid #e5e7eb; border-radius: 6px; }
+        .module h2 { color: #1f2937; margin-top: 0; }
+        .function { margin: 15px 0; padding: 15px; background: #f9fafb; border-left: 4px solid #3b82f6; }
+        .function h3 { margin-top: 0; color: #374151; }
+        .params { margin: 10px 0; }
+        .param { margin: 5px 0; font-family: monospace; background: #f3f4f6; padding: 2px 6px; border-radius: 3px; }
+        code { background: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-family: 'SF Mono', Monaco, monospace; }
+        .example { background: #1f2937; color: #f9fafb; padding: 15px; border-radius: 6px; margin: 10px 0; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 JSR-352 Batch Tool - API Documentation</h1>
+        
+        <div class="module">
+            <h2>📋 Form Components</h2>
+            <p>Accessible form components with validation and ARIA support.</p>
+            
+            <div class="function">
+                <h3>FormField</h3>
+                <p>Form field component that provides field context and wraps React Hook Form's Controller.</p>
+                <div class="params">
+                    <div class="param"><strong>name:</strong> Field name for form control</div>
+                    <div class="param"><strong>...props:</strong> Controller props from React Hook Form</div>
+                </div>
+                <div class="example">
+&lt;FormField
+  control={form.control}
+  name="batchName"
+  render={({ field }) =&gt; (
+    &lt;FormItem&gt;
+      &lt;FormLabel&gt;Batch Name&lt;/FormLabel&gt;
+      &lt;FormControl&gt;
+        &lt;Input {...field} /&gt;
+      &lt;/FormControl&gt;
+      &lt;FormMessage /&gt;
+    &lt;/FormItem&gt;
+  )}
+/&gt;
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>useFormField</h3>
+                <p>Hook that provides form field state and accessibility IDs. Must be used within FormField and FormItem components.</p>
+                <div class="params">
+                    <div class="param"><strong>Returns:</strong> Object with field state and accessibility attributes</div>
+                    <div class="param"><strong>id:</strong> Unique field ID</div>
+                    <div class="param"><strong>formItemId:</strong> Form item ID for accessibility</div>
+                    <div class="param"><strong>formDescriptionId:</strong> Description ID for aria-describedby</div>
+                    <div class="param"><strong>formMessageId:</strong> Message ID for error announcements</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="module">
+            <h2>♿ Accessibility Hooks</h2>
+            <p>Hooks for implementing accessibility features like skip navigation and focus management.</p>
+            
+            <div class="function">
+                <h3>useSkipToContent</h3>
+                <p>Hook for implementing skip-to-content functionality for keyboard users.</p>
+                <div class="params">
+                    <div class="param"><strong>skipLinkRef:</strong> Ref for skip link element</div>
+                    <div class="param"><strong>mainContentRef:</strong> Ref for main content element</div>
+                    <div class="param"><strong>skipToContent:</strong> Function to focus main content</div>
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>useFocusManagement</h3>
+                <p>Hook for managing focus and screen reader announcements.</p>
+                <div class="params">
+                    <div class="param"><strong>focusFirstError:</strong> Focuses first invalid form field</div>
+                    <div class="param"><strong>announceLiveRegion:</strong> Announces message to screen readers</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="module">
+            <h2>⌨️ Keyboard Navigation</h2>
+            <p>Keyboard shortcuts for step-based navigation.</p>
+            
+            <div class="function">
+                <h3>useKeyboardNavigation</h3>
+                <p>Hook for implementing keyboard shortcuts in step-based navigation.</p>
+                <div class="params">
+                    <div class="param"><strong>onNext:</strong> Callback for next step (Ctrl/Cmd + →)</div>
+                    <div class="param"><strong>onPrevious:</strong> Callback for previous step (Ctrl/Cmd + ←)</div>
+                </div>
+                <div class="example">
+const { handleNext, handlePrevious } = useStepNavigation();
+useKeyboardNavigation(handleNext, handlePrevious);
+                </div>
+            </div>
+        </div>
+
+        <div class="module">
+            <h2>⚡ Performance Hooks</h2>
+            <p>Performance optimization utilities for expensive operations.</p>
+            
+            <div class="function">
+                <h3>usePerformance</h3>
+                <p>Hook providing performance optimization utilities including debounce, throttle, and memoization.</p>
+                <div class="params">
+                    <div class="param"><strong>measureTime:</strong> Measures execution time of functions</div>
+                    <div class="param"><strong>debounce:</strong> Creates debounced function</div>
+                    <div class="param"><strong>throttle:</strong> Creates throttled function</div>
+                    <div class="param"><strong>memoizeExpensive:</strong> Memoizes expensive computations</div>
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>useLazyComponent</h3>
+                <p>Hook for lazy loading React components to improve initial bundle size.</p>
+                <div class="params">
+                    <div class="param"><strong>importFn:</strong> Dynamic import function</div>
+                </div>
+                <div class="example">
+const LazyComponent = useLazyComponent(() =&gt; import('./MyComponent'));
+                </div>
+            </div>
+        </div>
+
+        <div class="module">
+            <h2>🗄️ State Management</h2>
+            <p>Zustand store for managing JSR-352 batch job form state with persistence.</p>
+            
+            <div class="function">
+                <h3>useFormStore</h3>
+                <p>Zustand store hook for managing JSR-352 batch job form state. Includes persistence to session storage and step management.</p>
+                <div class="params">
+                    <div class="param"><strong>currentStep:</strong> Current step index</div>
+                    <div class="param"><strong>formData:</strong> Form data object</div>
+                    <div class="param"><strong>steps:</strong> Array of form steps</div>
+                    <div class="param"><strong>setCurrentStep:</strong> Function to update current step</div>
+                    <div class="param"><strong>setFormData:</strong> Function to update form data</div>
+                    <div class="param"><strong>resetForm:</strong> Function to reset entire form</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="module">
+            <h2>🔗 Skip Link Component</h2>
+            <p>Skip link component for keyboard navigation accessibility.</p>
+            
+            <div class="function">
+                <h3>SkipLink</h3>
+                <p>Skip link component that allows keyboard users to bypass navigation. Becomes visible when focused.</p>
+                <div class="params">
+                    <div class="param"><strong>href:</strong> Target element ID or URL fragment</div>
+                    <div class="param"><strong>children:</strong> Link content</div>
+                    <div class="param"><strong>className:</strong> Additional CSS classes (optional)</div>
+                </div>
+                <div class="example">
+&lt;SkipLink href="#main-content"&gt;Skip to main content&lt;/SkipLink&gt;
+                </div>
+            </div>
+        </div>
+
+        <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center; color: #6b7280;">
+            <p>Generated for JSR-352 Batch Tool - Enterprise Batch Job Configuration</p>
+        </footer>
+    </div>
+</body>
+</html>
