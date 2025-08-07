@@ -15,7 +15,11 @@ export const sanitizeHtml = (input: string): string => {
   let sanitized = input.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
   
   // Remove dangerous attributes
-  sanitized = sanitized.replace(/\s*on\w+\s*=\s*["'][^"']*["']/gi, '');
+  let prevSanitized;
+  do {
+    prevSanitized = sanitized;
+    sanitized = sanitized.replace(/\s*on\w+\s*=\s*["'][^"']*["']/gi, '');
+  } while (sanitized !== prevSanitized);
   sanitized = sanitized.replace(/\s*javascript\s*:/gi, '');
   sanitized = sanitized.replace(/\s*vbscript\s*:/gi, '');
   sanitized = sanitized.replace(/\s*data\s*:/gi, '');
