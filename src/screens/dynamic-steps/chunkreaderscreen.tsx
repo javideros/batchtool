@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { BookOpen, Settings, Search, Plus, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import { resolveTargetStepId, isAddingNewStep } from "@/utils/stepUtils";
 import { createUniqueClassValidator, createUniqueClassErrorMessage } from "@/utils/validationUtils";
 import { useFieldArray } from "react-hook-form";
@@ -72,7 +73,7 @@ const ChunkReaderScreen: React.FC<ChunkReaderScreenProps> = ({ stepNumber, stepI
   const { stepItems, updateStepData } = useStepDataUpdate();
   
   const { dynamicStepsData } = useFormStore();
-  const currentStepData = dynamicStepsData.currentStep;
+  const currentStepData = dynamicStepsData?.currentStep;
   const targetStepId = currentStepData?.id || resolveTargetStepId(stepItemId, stepItems, isAddingNewStep(steps));
   const { handleBack } = useStepNavigation(stepNumber, targetStepId);
   
@@ -121,7 +122,7 @@ const ChunkReaderScreen: React.FC<ChunkReaderScreenProps> = ({ stepNumber, stepI
     
     // Check if processor is needed for chunk steps
     const { dynamicStepsData, setDynamicStepData } = useFormStore.getState();
-    const currentStep = dynamicStepsData.currentStep;
+    const currentStep = dynamicStepsData?.currentStep;
     
     if (currentStep?.addProcessor) {
       // Go to processor phase
@@ -138,16 +139,18 @@ const ChunkReaderScreen: React.FC<ChunkReaderScreenProps> = ({ stepNumber, stepI
   return (
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">
-          📖 Chunk Reader
+        <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center justify-center gap-2">
+          <BookOpen className="h-8 w-8" />
+          Chunk Reader
         </h1>
         <p className="text-muted-foreground">Configure your chunk reader implementation</p>
       </div>
       
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            ⚙️ Reader Configuration
+          <CardTitle className="text-2xl font-semibold flex items-center gap-2">
+            <Settings className="h-5 w-5" />
+            Reader Configuration
           </CardTitle>
           <CardDescription>
             Configure your chunk reader implementation details
@@ -284,26 +287,29 @@ const ChunkReaderScreen: React.FC<ChunkReaderScreenProps> = ({ stepNumber, stepI
               {(dataSourceValue === "database" || dataSourceValue === "rest") && (
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-lg font-semibold text-gray-800">
-                      🔍 Query Criteria
+                    <h4 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                      <Search className="h-5 w-5" />
+                      Query Criteria
                     </h4>
                     <Button
                       type="button"
                       onClick={() => append({ field: "", operator: "=", value: "" })}
-                      className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium rounded-lg transition-all"
+                      className="gap-2"
                     >
-                      ➕ Add Criteria
+                      <Plus className="h-4 w-4" />
+                      Add Criteria
                     </Button>
                   </div>
                   
                   {fields.length === 0 ? (
-                    <p className="text-gray-500 text-center py-4 bg-gray-50 rounded-lg">
-                      No criteria defined. Click Add Criteria to add query conditions.
-                    </p>
+                    <div className="text-center py-8 border-2 border-dashed border-border rounded-lg">
+                      <p className="text-muted-foreground mb-2">No criteria defined</p>
+                      <p className="text-sm text-muted-foreground">Click Add Criteria to add query conditions</p>
+                    </div>
                   ) : (
                     <div className="space-y-3">
                       {fields.map((criteriaField, index) => (
-                        <div key={criteriaField.id} className="grid grid-cols-1 md:grid-cols-4 gap-3 p-4 bg-gray-50 rounded-lg border">
+                        <div key={criteriaField.id} className="grid grid-cols-1 md:grid-cols-4 gap-3 p-4 bg-muted/50 rounded-lg border">
                           <FormField
                             control={form.control}
                             name={`criteria.${index}.field`}
@@ -360,11 +366,12 @@ const ChunkReaderScreen: React.FC<ChunkReaderScreenProps> = ({ stepNumber, stepI
                           <div className="flex items-end">
                             <Button
                               type="button"
-                              variant="outline"
+                              variant="destructive"
+                              size="sm"
                               onClick={() => remove(index)}
-                              className="w-full px-3 py-2 border-2 border-red-300 text-red-600 hover:bg-red-50 transition-colors"
+                              className="w-full"
                             >
-                              🗑️ Remove
+                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
                         </div>
@@ -378,31 +385,33 @@ const ChunkReaderScreen: React.FC<ChunkReaderScreenProps> = ({ stepNumber, stepI
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <h4 className="text-lg font-semibold text-gray-800">
-                      ⚙️ Step Properties
+                    <h4 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                      <Settings className="h-5 w-5" />
+                      Step Properties
                     </h4>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-muted-foreground mt-1">
                       Configure reader-specific properties (can reference job parameters)
                     </p>
                   </div>
                   <Button
                     type="button"
                     onClick={() => appendProp({ key: "", value: "", type: "String" })}
-                    className="px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-medium rounded-lg transition-all"
+                    className="gap-2"
                   >
-                    ➕ Add Property
+                    <Plus className="h-4 w-4" />
+                    Add Property
                   </Button>
                 </div>
                 
                 {propFields.length === 0 ? (
-                  <div className="text-center py-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-                    <p className="text-gray-500 mb-2">No step properties defined</p>
-                    <p className="text-sm text-gray-400">Properties can reference job parameters like: #&#123;jobParameters['dataSource']&#125;</p>
+                  <div className="text-center py-8 border-2 border-dashed border-border rounded-lg">
+                    <p className="text-muted-foreground mb-2">No step properties defined</p>
+                    <p className="text-sm text-muted-foreground">Properties can reference job parameters like: #&#123;jobParameters['dataSource']&#125;</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {propFields.map((field, index) => (
-                      <div key={field.id} className="p-4 bg-green-50 rounded-lg border border-green-200">
+                      <div key={field.id} className="p-4 bg-muted/50 rounded-lg border">
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                           <FormField
                             control={form.control}
@@ -435,11 +444,12 @@ const ChunkReaderScreen: React.FC<ChunkReaderScreenProps> = ({ stepNumber, stepI
                           <div className="flex items-end">
                             <Button
                               type="button"
-                              variant="outline"
+                              variant="destructive"
                               onClick={() => removeProp(index)}
-                              className="w-full px-3 py-2 border-2 border-red-300 text-red-600 hover:bg-red-50 transition-colors"
+                              className="w-full"
                             >
-                              🗑️ Remove
+                              <Trash2 className="h-4 w-4" />
+                              Remove
                             </Button>
                           </div>
                         </div>
@@ -480,13 +490,15 @@ const ChunkReaderScreen: React.FC<ChunkReaderScreenProps> = ({ stepNumber, stepI
                 <Button 
                   type="button" 
                   onClick={() => handleBack(form)}
-                  className="w-full sm:w-auto "
+                  className="w-full sm:w-auto gap-2"
                   variant="outline"
                 >
-                  ← Back
+                  <ChevronLeft className="h-4 w-4" />
+                  Back
                 </Button>
-                <Button type="submit" variant="outline" className="w-full sm:w-auto ">
-                  Next →
+                <Button type="submit" variant="outline" className="w-full sm:w-auto gap-2">
+                  Next
+                  <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
             </form>

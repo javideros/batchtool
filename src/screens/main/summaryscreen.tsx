@@ -3,6 +3,7 @@ import { useFormStore } from "@/lib/jsr352batchjobstore";
 import { useStepNavigation } from "@/hooks/use-step-navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ClipboardList, Settings, BarChart3, Headphones, RotateCcw, Wrench, FileText, Eye, EyeOff, Download, Copy, CheckCircle, AlertTriangle, ChevronLeft, PartyPopper } from "lucide-react";
 import { generateJSR352XML, downloadXML, copyToClipboard } from "@/utils/xmlGenerator";
 import { validateJSR352XML, formatValidationResults } from "@/utils/xmlValidator";
 import { useState, useMemo } from "react";
@@ -97,8 +98,9 @@ const SummaryScreen: React.FC<{ stepNumber: number }> = ({ stepNumber }) => {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">
-          📋 Configuration Summary
+        <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center justify-center gap-2">
+          <ClipboardList className="h-8 w-8" />
+          Configuration Summary
         </h1>
         <p className="text-muted-foreground">Review your batch job configuration</p>
       </div>
@@ -106,8 +108,9 @@ const SummaryScreen: React.FC<{ stepNumber: number }> = ({ stepNumber }) => {
       <div className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              ⚙️ Batch Details
+            <CardTitle className="text-2xl font-semibold flex items-center gap-2">
+              <Settings className="h-5 w-5" />
+              Batch Details
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -134,8 +137,9 @@ const SummaryScreen: React.FC<{ stepNumber: number }> = ({ stepNumber }) => {
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              📊 Batch Properties
+            <CardTitle className="text-2xl font-semibold flex items-center gap-2">
+              <BarChart3 className="h-5 w-5" />
+              Batch Properties
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -217,8 +221,9 @@ const SummaryScreen: React.FC<{ stepNumber: number }> = ({ stepNumber }) => {
         {formData.batchListeners && formData.batchListeners.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                🎧 Batch Listeners ({formData.batchListeners.length})
+              <CardTitle className="text-2xl font-semibold flex items-center gap-2">
+                <Headphones className="h-5 w-5" />
+                Batch Listeners ({formData.batchListeners.length})
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -236,8 +241,9 @@ const SummaryScreen: React.FC<{ stepNumber: number }> = ({ stepNumber }) => {
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              🔄 Job Restart Configuration
+            <CardTitle className="text-2xl font-semibold flex items-center gap-2">
+              <RotateCcw className="h-5 w-5" />
+              Job Restart Configuration
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -293,8 +299,9 @@ const SummaryScreen: React.FC<{ stepNumber: number }> = ({ stepNumber }) => {
         {stepItems.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                🔧 Step Items ({stepItems.length})
+              <CardTitle className="text-2xl font-semibold flex items-center gap-2">
+                <Wrench className="h-5 w-5" />
+                Step Items ({stepItems.length})
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -554,8 +561,9 @@ const SummaryScreen: React.FC<{ stepNumber: number }> = ({ stepNumber }) => {
         {/* XML Generation */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              📄 Generated JSR-352 XML
+            <CardTitle className="text-2xl font-semibold flex items-center gap-2">
+              <FileText className="h-5 w-5" />
+              Generated JSR-352 XML
             </CardTitle>
             <CardDescription>
               Your complete batch job configuration in JSR-352 XML format
@@ -620,7 +628,11 @@ const SummaryScreen: React.FC<{ stepNumber: number }> = ({ stepNumber }) => {
                   variant="outline"
                   className="flex items-center gap-2"
                 >
-                  {showXMLPreview ? '🙈 Hide' : '👁️ Preview'} XML
+                  {showXMLPreview ? (
+                    <><EyeOff className="h-4 w-4" /> Hide</>
+                  ) : (
+                    <><Eye className="h-4 w-4" /> Preview</>
+                  )} XML
                 </Button>
                 <Button
                   onClick={handleDownloadXML}
@@ -631,7 +643,8 @@ const SummaryScreen: React.FC<{ stepNumber: number }> = ({ stepNumber }) => {
                       : 'bg-gray-400 text-gray-600 cursor-not-allowed'
                   }`}
                 >
-                  💾 Download XML
+                  <Download className="h-4 w-4" />
+                  Download XML
                 </Button>
                 <Button
                   onClick={handleCopyXML}
@@ -640,7 +653,11 @@ const SummaryScreen: React.FC<{ stepNumber: number }> = ({ stepNumber }) => {
                     copySuccess ? 'bg-green-50 border-green-300 text-green-700' : ''
                   }`}
                 >
-                  {copySuccess ? '✅ Copied!' : '📋 Copy XML'}
+                  {copySuccess ? (
+                    <><CheckCircle className="h-4 w-4" /> Copied!</>
+                  ) : (
+                    <><Copy className="h-4 w-4" /> Copy XML</>
+                  )}
                 </Button>
                 
                 {/* Validation Details Button */}
@@ -652,7 +669,8 @@ const SummaryScreen: React.FC<{ stepNumber: number }> = ({ stepNumber }) => {
                   variant="outline"
                   className="flex items-center gap-2 text-sm"
                 >
-                  📋 Copy Validation Report
+                  <Copy className="h-4 w-4" />
+                  Copy Validation Report
                 </Button>
               </div>
               
@@ -691,8 +709,9 @@ const SummaryScreen: React.FC<{ stepNumber: number }> = ({ stepNumber }) => {
         {transitionErrors.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-red-600">
-                ⚠️ Validation Errors ({transitionErrors.length})
+              <CardTitle className="text-2xl font-semibold flex items-center gap-2 text-red-600">
+                <AlertTriangle className="h-5 w-5" />
+                Validation Errors ({transitionErrors.length})
               </CardTitle>
               <CardDescription>
                 The following issues need to be resolved before generating the batch job
@@ -704,7 +723,7 @@ const SummaryScreen: React.FC<{ stepNumber: number }> = ({ stepNumber }) => {
                 {transitionErrors.map((error: any, index: number) => (
                   <div key={index} className="p-3 bg-red-50 rounded-lg border border-red-200">
                     <div className="flex items-start gap-3">
-                      <span className="text-red-500 mt-1">⚠️</span>
+                      <AlertTriangle className="h-5 w-5 text-red-500 mt-1" />
                       <div>
                         <div className="font-medium text-red-800">
                           Step "{error.stepName}" - Transition Error
@@ -730,16 +749,18 @@ const SummaryScreen: React.FC<{ stepNumber: number }> = ({ stepNumber }) => {
           type="button" 
           variant="outline" 
           onClick={() => handleBack(dummyForm)}
-          className="w-full sm:w-auto "
+          className="w-full sm:w-auto gap-2"
         >
-          ← Back
+          <ChevronLeft className="h-4 w-4" />
+          Back
         </Button>
         <Button 
           onClick={handleFinish}
           variant="outline"
-          className="w-full sm:w-auto "
+          className="w-full sm:w-auto gap-2"
         >
-          🎉 Complete Setup
+          <PartyPopper className="h-4 w-4" />
+          Complete Setup
         </Button>
       </div>
     </div>

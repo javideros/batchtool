@@ -5,6 +5,10 @@ import { useStepDataUpdate } from "@/hooks/use-step-data-update";
 import { Form, FormField } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { Split, Settings, FileText, Map, Hash, Package, Search, Users, Plus, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import { resolveTargetStepId, isAddingNewStep } from "@/utils/stepUtils";
 import { createUniqueClassValidator, createUniqueClassErrorMessage } from "@/utils/validationUtils";
 import { useFieldArray } from "react-hook-form";
@@ -74,7 +78,7 @@ const ChunkPartitionScreen: React.FC<ChunkPartitionScreenProps> = ({ stepNumber,
     schema: partitionerSchema,
     currentStep: stepNumber,
     defaultValues: {
-      partitionerClass: item.partitionerClass || "",
+      partitionerClass: item.partitionerClass || (formData.packageName ? `${formData.packageName}.` : ""),
       stepProperties: item.stepProperties || [],
       advancedPartitionConfig: item.advancedPartitionConfig || {
         enabled: false,
@@ -112,16 +116,18 @@ const ChunkPartitionScreen: React.FC<ChunkPartitionScreenProps> = ({ stepNumber,
   return (
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">
-          🔄 Chunk Partitioner
+        <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center justify-center gap-2">
+          <Split className="h-8 w-8" />
+          Chunk Partitioner
         </h1>
         <p className="text-muted-foreground">Configure your chunk partitioner implementation</p>
       </div>
       
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            ⚙️ Partitioner Configuration
+          <CardTitle className="text-2xl font-semibold flex items-center gap-2">
+            <Settings className="h-5 w-5" />
+            Partitioner Configuration
           </CardTitle>
           <CardDescription>
             Configure your chunk partitioner implementation details
@@ -133,34 +139,33 @@ const ChunkPartitionScreen: React.FC<ChunkPartitionScreenProps> = ({ stepNumber,
               <FormField
                 control={form.control}
                 name="partitionerClass"
-                render={({ field, fieldState }) => (
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      📝 Partitioner Class
-                    </label>
-                    <p className="text-sm text-gray-500 mb-3">
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium flex items-center gap-2">
+                      <FileText className="h-4 w-4" />
+                      Partitioner Class
+                    </FormLabel>
+                    <p className="text-sm text-muted-foreground mb-3">
                       Enter the fully qualified Java class name for your chunk partitioner
                     </p>
-                    <input 
-                      {...field} 
-                      className="w-full h-12 p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all" 
-                      placeholder={formData.packageName ? `${formData.packageName}.MyPartitioner` : "com.example.MyPartitioner"}
-                    />
-                    {fieldState.error && (
-                      <p className="text-red-500 text-sm mt-2">
-                        ⚠️ {fieldState.error.message}
-                      </p>
-                    )}
-                  </div>
+                    <FormControl>
+                      <Input 
+                        {...field} 
+                        placeholder={formData.packageName ? `${formData.packageName}.MyPartitioner` : "com.example.MyPartitioner"}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
               />
 
               {/* Advanced Partition Configuration */}
-              <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
-                <h3 className="text-lg font-semibold text-indigo-800 mb-4">
-                  🎆 Advanced Partition Configuration
+              <div className="p-4 bg-muted/50 rounded-lg border">
+                <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                  <Settings className="h-5 w-5" />
+                  Advanced Partition Configuration
                 </h3>
-                <p className="text-sm text-indigo-700 mb-4">
+                <p className="text-sm text-muted-foreground mb-4">
                   Configure advanced partitioning components for complex parallel processing scenarios.
                 </p>
                 
@@ -168,22 +173,24 @@ const ChunkPartitionScreen: React.FC<ChunkPartitionScreenProps> = ({ stepNumber,
                   control={form.control}
                   name="advancedPartitionConfig.enabled"
                   render={({ field }) => (
-                    <div className="flex items-center gap-3 mb-4">
-                      <input
-                        type="checkbox"
-                        checked={field.value}
-                        onChange={field.onChange}
-                        className="w-5 h-5 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500"
-                      />
-                      <div>
-                        <label className="font-medium text-indigo-800">
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 mb-4">
+                      <FormControl>
+                        <input
+                          type="checkbox"
+                          checked={field.value}
+                          onChange={field.onChange}
+                          className="w-4 h-4 mt-1 accent-primary"
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel className="text-sm font-medium">
                           Enable Advanced Partitioning
-                        </label>
-                        <p className="text-sm text-indigo-600 mt-1">
+                        </FormLabel>
+                        <p className="text-sm text-muted-foreground">
                           Add mapper, collector, analyzer, and reducer components
                         </p>
                       </div>
-                    </div>
+                    </FormItem>
                   )}
                 />
                 
@@ -193,52 +200,52 @@ const ChunkPartitionScreen: React.FC<ChunkPartitionScreenProps> = ({ stepNumber,
                       <FormField
                         control={form.control}
                         name="advancedPartitionConfig.mapperClass"
-                        render={({ field, fieldState }) => (
-                          <div>
-                            <label className="block text-sm font-medium text-indigo-700 mb-2">
-                              🗺️ Partition Mapper (Optional)
-                            </label>
-                            <input
-                              {...field}
-                              className="w-full p-3 border border-indigo-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all"
-                              placeholder="com.example.MyPartitionMapper"
-                            />
-                            <p className="text-xs text-indigo-600 mt-1">
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium flex items-center gap-2">
+                              <Map className="h-4 w-4" />
+                              Partition Mapper (Optional)
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                {...field}
+                                placeholder="com.example.MyPartitionMapper"
+                              />
+                            </FormControl>
+                            <p className="text-xs text-muted-foreground">
                               Custom partition mapping logic
                             </p>
-                            {fieldState.error && (
-                              <p className="text-red-500 text-xs mt-1">{fieldState.error.message}</p>
-                            )}
-                          </div>
+                            <FormMessage />
+                          </FormItem>
                         )}
                       />
                       
                       <FormField
                         control={form.control}
                         name="advancedPartitionConfig.partitionCount"
-                        render={({ field, fieldState }) => (
-                          <div>
-                            <label className="block text-sm font-medium text-indigo-700 mb-2">
-                              🔢 Partition Count (Alternative to Mapper)
-                            </label>
-                            <input
-                              {...field}
-                              type="number"
-                              min="1"
-                              onChange={(e) => {
-                                const val = parseInt(e.target.value, 10);
-                                field.onChange(isNaN(val) ? 1 : Math.max(1, val));
-                              }}
-                              className="w-full p-3 border border-indigo-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all"
-                              placeholder="4"
-                            />
-                            <p className="text-xs text-indigo-600 mt-1">
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium flex items-center gap-2">
+                              <Hash className="h-4 w-4" />
+                              Partition Count (Alternative to Mapper)
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                {...field}
+                                type="number"
+                                min="1"
+                                onChange={(e) => {
+                                  const val = parseInt(e.target.value, 10);
+                                  field.onChange(isNaN(val) ? 1 : Math.max(1, val));
+                                }}
+                                placeholder="4"
+                              />
+                            </FormControl>
+                            <p className="text-xs text-muted-foreground">
                               Number of parallel partitions
                             </p>
-                            {fieldState.error && (
-                              <p className="text-red-500 text-xs mt-1">{fieldState.error.message}</p>
-                            )}
-                          </div>
+                            <FormMessage />
+                          </FormItem>
                         )}
                       />
                     </div>
@@ -247,46 +254,46 @@ const ChunkPartitionScreen: React.FC<ChunkPartitionScreenProps> = ({ stepNumber,
                       <FormField
                         control={form.control}
                         name="advancedPartitionConfig.collectorClass"
-                        render={({ field, fieldState }) => (
-                          <div>
-                            <label className="block text-sm font-medium text-indigo-700 mb-2">
-                              📦 Partition Collector (Optional)
-                            </label>
-                            <input
-                              {...field}
-                              className="w-full p-3 border border-indigo-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all"
-                              placeholder="com.example.MyPartitionCollector"
-                            />
-                            <p className="text-xs text-indigo-600 mt-1">
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium flex items-center gap-2">
+                              <Package className="h-4 w-4" />
+                              Partition Collector (Optional)
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                {...field}
+                                placeholder="com.example.MyPartitionCollector"
+                              />
+                            </FormControl>
+                            <p className="text-xs text-muted-foreground">
                               Collect data from partition executions
                             </p>
-                            {fieldState.error && (
-                              <p className="text-red-500 text-xs mt-1">{fieldState.error.message}</p>
-                            )}
-                          </div>
+                            <FormMessage />
+                          </FormItem>
                         )}
                       />
                       
                       <FormField
                         control={form.control}
                         name="advancedPartitionConfig.analyzerClass"
-                        render={({ field, fieldState }) => (
-                          <div>
-                            <label className="block text-sm font-medium text-indigo-700 mb-2">
-                              🔍 Partition Analyzer (Optional)
-                            </label>
-                            <input
-                              {...field}
-                              className="w-full p-3 border border-indigo-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all"
-                              placeholder="com.example.MyPartitionAnalyzer"
-                            />
-                            <p className="text-xs text-indigo-600 mt-1">
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium flex items-center gap-2">
+                              <Search className="h-4 w-4" />
+                              Partition Analyzer (Optional)
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                {...field}
+                                placeholder="com.example.MyPartitionAnalyzer"
+                              />
+                            </FormControl>
+                            <p className="text-xs text-muted-foreground">
                               Analyze partition execution results
                             </p>
-                            {fieldState.error && (
-                              <p className="text-red-500 text-xs mt-1">{fieldState.error.message}</p>
-                            )}
-                          </div>
+                            <FormMessage />
+                          </FormItem>
                         )}
                       />
                     </div>
@@ -294,29 +301,32 @@ const ChunkPartitionScreen: React.FC<ChunkPartitionScreenProps> = ({ stepNumber,
                     <FormField
                       control={form.control}
                       name="advancedPartitionConfig.reducerClass"
-                      render={({ field, fieldState }) => (
-                        <div>
-                          <label className="block text-sm font-medium text-indigo-700 mb-2">
-                            🤝 Partition Reducer (Optional)
-                          </label>
-                          <input
-                            {...field}
-                            className="w-full p-3 border border-indigo-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all"
-                            placeholder="com.example.MyPartitionReducer"
-                          />
-                          <p className="text-xs text-indigo-600 mt-1">
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium flex items-center gap-2">
+                            <Users className="h-4 w-4" />
+                            Partition Reducer (Optional)
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              placeholder="com.example.MyPartitionReducer"
+                            />
+                          </FormControl>
+                          <p className="text-xs text-muted-foreground">
                             Reduce/combine results from all partitions
                           </p>
-                          {fieldState.error && (
-                            <p className="text-red-500 text-xs mt-1">{fieldState.error.message}</p>
-                          )}
-                        </div>
+                          <FormMessage />
+                        </FormItem>
                       )}
                     />
                     
-                    <div className="p-3 bg-indigo-100 rounded border border-indigo-200">
-                      <h4 className="text-sm font-semibold text-indigo-800 mb-2">💡 Advanced Partition Components:</h4>
-                      <div className="text-xs text-indigo-700 space-y-1">
+                    <div className="p-3 bg-card rounded border">
+                      <h4 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+                        <Settings className="h-4 w-4" />
+                        Advanced Partition Components:
+                      </h4>
+                      <div className="text-xs text-muted-foreground space-y-1">
                         <div>• <strong>Mapper:</strong> Defines how data is split into partitions</div>
                         <div>• <strong>Collector:</strong> Gathers data from each partition during execution</div>
                         <div>• <strong>Analyzer:</strong> Analyzes partition results and decides next actions</div>
@@ -331,80 +341,81 @@ const ChunkPartitionScreen: React.FC<ChunkPartitionScreenProps> = ({ stepNumber,
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <h4 className="text-lg font-semibold text-gray-800">
-                      ⚙️ Step Properties
+                    <h4 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                      <Settings className="h-5 w-5" />
+                      Step Properties
                     </h4>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-muted-foreground mt-1">
                       Configure partitioner-specific properties (can reference job parameters)
                     </p>
                   </div>
                   <Button
                     type="button"
                     onClick={() => append({ key: "", value: "", type: "String" })}
-                    className="px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-medium rounded-lg transition-all"
+                    className="gap-2"
                   >
-                    ➕ Add Property
+                    <Plus className="h-4 w-4" />
+                    Add Property
                   </Button>
                 </div>
                 
                 {fields.length === 0 ? (
-                  <div className="text-center py-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-                    <p className="text-gray-500 mb-2">No step properties defined</p>
-                    <p className="text-sm text-gray-400">Properties can reference job parameters like: #&#123;jobParameters['chunkSize']&#125;</p>
+                  <div className="text-center py-8 border-2 border-dashed border-border rounded-lg">
+                    <p className="text-muted-foreground mb-2">No step properties defined</p>
+                    <p className="text-sm text-muted-foreground">Properties can reference job parameters like: #&#123;jobParameters['chunkSize']&#125;</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {fields.map((field, index) => (
-                      <div key={field.id} className="p-4 bg-green-50 rounded-lg border border-green-200">
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                      <div key={field.id} className="p-4 bg-muted/50 rounded-lg border">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                           <FormField
                             control={form.control}
                             name={`stepProperties.${index}.key`}
-                            render={({ field, fieldState }) => (
-                              <div>
-                                <label className="block text-xs font-medium text-green-700 mb-1">
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-xs">
                                   Property Key
-                                </label>
-                                <input
-                                  {...field}
-                                  className="w-full p-2 border border-green-300 rounded focus:border-green-500 focus:ring-1 focus:ring-green-200 transition-all"
-                                  placeholder="propertyName"
-                                />
-                                {fieldState.error && (
-                                  <p className="text-red-500 text-xs mt-1">{fieldState.error.message}</p>
-                                )}
-                              </div>
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    {...field}
+                                    placeholder="propertyName"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
                             )}
                           />
                           
                           <FormField
                             control={form.control}
                             name={`stepProperties.${index}.value`}
-                            render={({ field, fieldState }) => (
-                              <div className="md:col-span-2">
-                                <label className="block text-xs font-medium text-green-700 mb-1">
+                            render={({ field }) => (
+                              <FormItem className="md:col-span-2">
+                                <FormLabel className="text-xs">
                                   Property Value
-                                </label>
-                                <input
-                                  {...field}
-                                  className="w-full p-2 border border-green-300 rounded focus:border-green-500 focus:ring-1 focus:ring-green-200 transition-all"
-                                  placeholder="value or #&#123;jobParameters['paramName']&#125;"
-                                />
-                                {fieldState.error && (
-                                  <p className="text-red-500 text-xs mt-1">{fieldState.error.message}</p>
-                                )}
-                              </div>
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    {...field}
+                                    placeholder="value or #&#123;jobParameters['paramName']&#125;"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
                             )}
                           />
                           
                           <div className="flex items-end">
                             <Button
                               type="button"
-                              variant="outline"
+                              variant="destructive"
                               onClick={() => remove(index)}
-                              className="w-full px-3 py-2 border-2 border-red-300 text-red-600 hover:bg-red-50 transition-colors"
+                              className="w-full"
                             >
-                              🗑️ Remove
+                              <Trash2 className="h-4 w-4" />
+                              Remove
                             </Button>
                           </div>
                         </div>
@@ -414,20 +425,25 @@ const ChunkPartitionScreen: React.FC<ChunkPartitionScreenProps> = ({ stepNumber,
                             control={form.control}
                             name={`stepProperties.${index}.type`}
                             render={({ field }) => (
-                              <div>
-                                <label className="block text-xs font-medium text-green-700 mb-1">
+                              <FormItem>
+                                <FormLabel className="text-xs">
                                   Property Type
-                                </label>
-                                <select 
-                                  {...field} 
-                                  className="w-full p-2 border border-green-300 rounded focus:border-green-500 focus:ring-1 focus:ring-green-200 transition-all bg-white"
-                                >
-                                  <option value="String">String</option>
-                                  <option value="Number">Number</option>
-                                  <option value="Boolean">Boolean</option>
-                                  <option value="Date">Date</option>
-                                </select>
-                              </div>
+                                </FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select type" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="String">String</SelectItem>
+                                    <SelectItem value="Number">Number</SelectItem>
+                                    <SelectItem value="Boolean">Boolean</SelectItem>
+                                    <SelectItem value="Date">Date</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
                             )}
                           />
                         </div>
@@ -441,17 +457,19 @@ const ChunkPartitionScreen: React.FC<ChunkPartitionScreenProps> = ({ stepNumber,
                 <Button 
                   type="button" 
                   onClick={handlePrevious}
-                  className="w-full sm:w-auto "
+                  className="w-full sm:w-auto gap-2"
                   variant="outline"
                 >
-                  ← Back
+                  <ChevronLeft className="h-4 w-4" />
+                  Back
                 </Button>
                 <Button 
                   type="submit"
                   variant="outline"
-                  className="w-full sm:w-auto "
+                  className="w-full sm:w-auto gap-2"
                 >
-                  Next →
+                  Next
+                  <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
             </form>

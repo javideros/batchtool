@@ -2,12 +2,15 @@ import React, { useMemo, useCallback } from 'react';
 import { useFormStore } from "@/lib/jsr352batchjobstore";
 import { useFormStep } from "@/hooks/use-form-step";
 import { useStepDataUpdate } from "@/hooks/use-step-data-update";
-import { Form, FormField } from "@/components/ui/form";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { resolveTargetStepId, isAddingNewStep } from "@/utils/stepUtils";
 import { createUniqueClassValidator, createUniqueClassErrorMessage } from "@/utils/validationUtils";
 import { useFieldArray } from "react-hook-form";
+import { Settings, Code, AlertTriangle, RotateCcw, Ban, Plus, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import z from "zod";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const findStepItem = (stepItems: any[], stepItemId?: string) => {
@@ -97,13 +100,13 @@ const ChunkProcessorScreen: React.FC<ChunkProcessorScreenProps> = React.memo(({ 
   const { formData, setCurrentStep, steps } = useFormStore();
   const { stepItems, updateStepData } = useStepDataUpdate();
   const { dynamicStepsData } = useFormStore();
-  const currentStepData = dynamicStepsData.currentStep;
+  const currentStepData = dynamicStepsData?.currentStep;
   const targetStepId = useMemo(() => currentStepData?.id || resolveTargetStepId(stepItemId, stepItems, isAddingNewStep(steps)), [currentStepData, stepItemId, stepItems, steps]);
   
   const item = useMemo(() => findStepItem(stepItems, targetStepId), [stepItems, targetStepId]);
   const processorSchema = useMemo(() => createProcessorSchema(stepItems, targetStepId), [stepItems, targetStepId]);
 
-  const { form, handlePrevious } = useFormStep({
+  const { form } = useFormStep({
     schema: processorSchema,
     currentStep: stepNumber,
     defaultValues: {
@@ -172,16 +175,23 @@ const ChunkProcessorScreen: React.FC<ChunkProcessorScreenProps> = React.memo(({ 
   return (
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">
-          ⚙️ Chunk Processor
+        <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center justify-center gap-2">
+          <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Chunk Processor
         </h1>
         <p className="text-muted-foreground">Configure your chunk processor implementation</p>
       </div>
       
-      <Card>
+      <Card className="border shadow-sm">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            🔄 Processor Configuration
+          <CardTitle className="text-2xl font-semibold flex items-center gap-2">
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            Processor Configuration
           </CardTitle>
           <CardDescription>
             Configure your chunk processor implementation details
@@ -195,25 +205,22 @@ const ChunkProcessorScreen: React.FC<ChunkProcessorScreenProps> = React.memo(({ 
               <FormField
                 control={form.control}
                 name="processorClass"
-                render={({ field, fieldState }) => (
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      📝 Processor Class
-                    </label>
-                    <p className="text-sm text-gray-500 mb-3">
-                      Enter the fully qualified Java class name for your chunk processor
-                    </p>
-                    <input 
-                      {...field} 
-                      className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all" 
-                      placeholder={formData.packageName ? `${formData.packageName}.MyProcessor` : "com.example.MyProcessor"}
-                    />
-                    {fieldState.error && (
-                      <p className="text-red-500 text-sm mt-2">
-                        ⚠️ {fieldState.error.message}
-                      </p>
-                    )}
-                  </div>
+                render={({ field }) => (
+                  <FormItem className="grid gap-2">
+                    <FormLabel className="text-sm font-medium flex items-center gap-2">
+                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                      </svg>
+                      Processor Class
+                    </FormLabel>
+                    <FormControl>
+                      <Input 
+                        {...field} 
+                        placeholder={formData.packageName ? `${formData.packageName}.MyProcessor` : "com.example.MyProcessor"}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
               />
               
@@ -221,59 +228,61 @@ const ChunkProcessorScreen: React.FC<ChunkProcessorScreenProps> = React.memo(({ 
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <h4 className="text-lg font-semibold text-gray-800">
-                      ⚡ Skip Exception Classes
+                    <h4 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5" />
+                      Skip Exception Classes
                     </h4>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-muted-foreground mt-1">
                       Exception classes that should be skipped during processing
                     </p>
                   </div>
                   <Button
                     type="button"
                     onClick={handleAppendSkip}
-                    className="px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-medium rounded-lg transition-all"
+                    className="gap-2"
                   >
-                    ➕ Add Skip Exception
+                    <Plus className="h-4 w-4" />
+                    Add Skip Exception
                   </Button>
                 </div>
                 
                 {skipFields.length === 0 ? (
-                  <p className="text-gray-500 text-center py-4 bg-gray-50 rounded-lg">
-                    No skip exceptions defined. Click Add Skip Exception to add exception classes to skip.
-                  </p>
+                  <div className="text-center py-8 border-2 border-dashed border-border rounded-lg">
+                    <p className="text-muted-foreground mb-2">No skip exceptions defined</p>
+                    <p className="text-sm text-muted-foreground">Click Add Skip Exception to add exception classes to skip</p>
+                  </div>
                 ) : (
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {skipFields.map((exceptionField, index) => (
-                      <div key={exceptionField.id} className="flex items-center gap-3 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                        <div className="flex-1">
-                          <FormField
-                            control={form.control}
-                            name={`skipExceptionClasses.${index}`}
-                            render={({ field, fieldState }) => (
-                              <div>
-                                <label className="block text-xs font-medium text-yellow-700 mb-1">
-                                  Skip Exception Class {index + 1}
-                                </label>
-                                <input
-                                  {...field}
-                                  className="w-full p-2 border border-yellow-300 rounded focus:border-yellow-500 focus:ring-1 focus:ring-yellow-200 transition-all"
-                                  placeholder={formData.packageName ? `${formData.packageName}.MyException` : "com.example.MyException"}
-                                />
-                                {fieldState.error && (
-                                  <p className="text-red-500 text-xs mt-1">{fieldState.error.message}</p>
-                                )}
+                      <div key={exceptionField.id} className="p-4 bg-muted/50 rounded-lg border">
+                        <FormField
+                          control={form.control}
+                          name={`skipExceptionClasses.${index}`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-sm font-medium">
+                                Skip Exception Class {index + 1}
+                              </FormLabel>
+                              <div className="flex gap-2">
+                                <FormControl>
+                                  <Input
+                                    {...field}
+                                    placeholder={formData.packageName ? `${formData.packageName}.MyException` : "com.example.MyException"}
+                                  />
+                                </FormControl>
+                                <Button
+                                  type="button"
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={() => removeSkip(index)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
                               </div>
-                            )}
-                          />
-                        </div>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => removeSkip(index)}
-                          className="px-3 py-2 border-2 border-red-300 text-red-600 hover:bg-red-50 transition-colors"
-                        >
-                          🗑️ Remove
-                        </Button>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </div>
                     ))}
                   </div>
@@ -349,19 +358,22 @@ const ChunkProcessorScreen: React.FC<ChunkProcessorScreenProps> = React.memo(({ 
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <h4 className="text-lg font-semibold text-gray-800">
-                      🔄 Retry Exception Classes
+                    <h4 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                      <RotateCcw className="h-5 w-5" />
+                      Retry Exception Classes
                     </h4>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-muted-foreground mt-1">
                       Exception classes that should trigger a retry during processing
                     </p>
                   </div>
                   <Button
                     type="button"
                     onClick={handleAppendRetry}
-                    className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium rounded-lg transition-all"
+                    variant="outline"
+                    className="gap-2"
                   >
-                    ➕ Add Retry Exception
+                    <Plus className="h-4 w-4" />
+                    Add Retry Exception
                   </Button>
                 </div>
                 
@@ -477,59 +489,62 @@ const ChunkProcessorScreen: React.FC<ChunkProcessorScreenProps> = React.memo(({ 
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <h4 className="text-lg font-semibold text-gray-800">
-                      🚫 No-Rollback Exception Classes
+                    <h4 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                      <Ban className="h-5 w-5" />
+                      No-Rollback Exception Classes
                     </h4>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-muted-foreground mt-1">
                       Exception classes that should not trigger transaction rollback
                     </p>
                   </div>
                   <Button
                     type="button"
                     onClick={() => appendNoRollback("")}
-                    className="px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-medium rounded-lg transition-all"
+                    variant="outline"
+                    className="gap-2"
                   >
-                    ➕ Add No-Rollback Exception
+                    <Plus className="h-4 w-4" />
+                    Add No-Rollback Exception
                   </Button>
                 </div>
                 
                 {noRollbackFields.length === 0 ? (
-                  <p className="text-gray-500 text-center py-4 bg-gray-50 rounded-lg">
-                    No no-rollback exceptions defined. Click Add No-Rollback Exception to add exception classes that won't trigger rollback.
-                  </p>
+                  <div className="text-center py-8 border-2 border-dashed border-border rounded-lg">
+                    <p className="text-muted-foreground mb-2">No no-rollback exceptions defined</p>
+                    <p className="text-sm text-muted-foreground">Click Add No-Rollback Exception to add exception classes that won't trigger rollback</p>
+                  </div>
                 ) : (
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {noRollbackFields.map((exceptionField, index) => (
-                      <div key={exceptionField.id} className="flex items-center gap-3 p-4 bg-purple-50 rounded-lg border border-purple-200">
-                        <div className="flex-1">
-                          <FormField
-                            control={form.control}
-                            name={`noRollbackExceptionClasses.${index}`}
-                            render={({ field, fieldState }) => (
-                              <div>
-                                <label className="block text-xs font-medium text-purple-700 mb-1">
-                                  No-Rollback Exception Class {index + 1}
-                                </label>
-                                <input
-                                  {...field}
-                                  className="w-full p-2 border border-purple-300 rounded focus:border-purple-500 focus:ring-1 focus:ring-purple-200 transition-all"
-                                  placeholder="com.example.NonTransactionalException"
-                                />
-                                {fieldState.error && (
-                                  <p className="text-red-500 text-xs mt-1">{fieldState.error.message}</p>
-                                )}
+                      <div key={exceptionField.id} className="p-4 bg-muted/50 rounded-lg border">
+                        <FormField
+                          control={form.control}
+                          name={`noRollbackExceptionClasses.${index}`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-sm font-medium">
+                                No-Rollback Exception Class {index + 1}
+                              </FormLabel>
+                              <div className="flex gap-2">
+                                <FormControl>
+                                  <Input
+                                    {...field}
+                                    placeholder="com.example.NonTransactionalException"
+                                  />
+                                </FormControl>
+                                <Button
+                                  type="button"
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={() => removeNoRollback(index)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
                               </div>
-                            )}
-                          />
-                        </div>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => removeNoRollback(index)}
-                          className="px-3 py-2 border-2 border-red-300 text-red-600 hover:bg-red-50 transition-colors"
-                        >
-                          🗑️ Remove
-                        </Button>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </div>
                     ))}
                   </div>
@@ -607,80 +622,81 @@ const ChunkProcessorScreen: React.FC<ChunkProcessorScreenProps> = React.memo(({ 
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <h4 className="text-lg font-semibold text-gray-800">
-                      ⚙️ Step Properties
+                    <h4 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                      <Settings className="h-5 w-5" />
+                      Step Properties
                     </h4>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-muted-foreground mt-1">
                       Configure processor-specific properties (can reference job parameters)
                     </p>
                   </div>
                   <Button
                     type="button"
                     onClick={handleAppendProp}
-                    className="px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-medium rounded-lg transition-all"
+                    className="gap-2"
                   >
-                    ➕ Add Property
+                    <Plus className="h-4 w-4" />
+                    Add Property
                   </Button>
                 </div>
                 
                 {propFields.length === 0 ? (
-                  <div className="text-center py-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-                    <p className="text-gray-500 mb-2">No step properties defined</p>
-                    <p className="text-sm text-gray-400">Properties can reference job parameters like: #&#123;jobParameters['asOfDate']&#125;</p>
+                  <div className="text-center py-8 border-2 border-dashed border-border rounded-lg">
+                    <p className="text-muted-foreground mb-2">No step properties defined</p>
+                    <p className="text-sm text-muted-foreground">Properties can reference job parameters like: #&#123;jobParameters['asOfDate']&#125;</p>
                   </div>
                 ) : (
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {propFields.map((field, index) => (
-                      <div key={field.id} className="p-4 bg-green-50 rounded-lg border border-green-200">
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                      <div key={field.id} className="p-4 bg-muted/50 rounded-lg border">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                           <FormField
                             control={form.control}
                             name={`stepProperties.${index}.key`}
-                            render={({ field, fieldState }) => (
-                              <div>
-                                <label className="block text-xs font-medium text-green-700 mb-1">
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-xs">
                                   Property Key
-                                </label>
-                                <input
-                                  {...field}
-                                  className="w-full p-2 border border-green-300 rounded focus:border-green-500 focus:ring-1 focus:ring-green-200 transition-all"
-                                  placeholder="propertyName"
-                                />
-                                {fieldState.error && (
-                                  <p className="text-red-500 text-xs mt-1">{fieldState.error.message}</p>
-                                )}
-                              </div>
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    {...field}
+                                    placeholder="propertyName"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
                             )}
                           />
                           
                           <FormField
                             control={form.control}
                             name={`stepProperties.${index}.value`}
-                            render={({ field, fieldState }) => (
-                              <div className="md:col-span-2">
-                                <label className="block text-xs font-medium text-green-700 mb-1">
+                            render={({ field }) => (
+                              <FormItem className="md:col-span-2">
+                                <FormLabel className="text-xs">
                                   Property Value
-                                </label>
-                                <input
-                                  {...field}
-                                  className="w-full p-2 border border-green-300 rounded focus:border-green-500 focus:ring-1 focus:ring-green-200 transition-all"
-                                  placeholder="value or #&#123;jobParameters['paramName']&#125;"
-                                />
-                                {fieldState.error && (
-                                  <p className="text-red-500 text-xs mt-1">{fieldState.error.message}</p>
-                                )}
-                              </div>
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    {...field}
+                                    placeholder="value or #&#123;jobParameters['paramName']&#125;"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
                             )}
                           />
                           
                           <div className="flex items-end">
                             <Button
                               type="button"
-                              variant="outline"
+                              variant="destructive"
                               onClick={() => removeProp(index)}
-                              className="w-full px-3 py-2 border-2 border-red-300 text-red-600 hover:bg-red-50 transition-colors"
+                              className="w-full"
                             >
-                              🗑️ Remove
+                              <Trash2 className="h-4 w-4" />
+                              Remove
                             </Button>
                           </div>
                         </div>
@@ -690,20 +706,25 @@ const ChunkProcessorScreen: React.FC<ChunkProcessorScreenProps> = React.memo(({ 
                             control={form.control}
                             name={`stepProperties.${index}.type`}
                             render={({ field }) => (
-                              <div>
-                                <label className="block text-xs font-medium text-green-700 mb-1">
+                              <FormItem>
+                                <FormLabel className="text-xs">
                                   Property Type
-                                </label>
-                                <select 
-                                  {...field} 
-                                  className="w-full p-2 border border-green-300 rounded focus:border-green-500 focus:ring-1 focus:ring-green-200 transition-all bg-white"
-                                >
-                                  <option value="String">String</option>
-                                  <option value="Number">Number</option>
-                                  <option value="Boolean">Boolean</option>
-                                  <option value="Date">Date</option>
-                                </select>
-                              </div>
+                                </FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select type" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="String">String</SelectItem>
+                                    <SelectItem value="Number">Number</SelectItem>
+                                    <SelectItem value="Boolean">Boolean</SelectItem>
+                                    <SelectItem value="Date">Date</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
                             )}
                           />
                         </div>
@@ -717,14 +738,19 @@ const ChunkProcessorScreen: React.FC<ChunkProcessorScreenProps> = React.memo(({ 
               <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-6">
                 <Button 
                   type="button" 
-                  onClick={handlePrevious}
-                  className="w-full sm:w-auto "
+                  onClick={() => {
+                    const { setDynamicStepData } = useFormStore.getState();
+                    setDynamicStepData('chunkPhase', 'reader');
+                  }}
+                  className="w-full sm:w-auto gap-2"
                   variant="outline"
                 >
-                  ← Back
+                  <ChevronLeft className="h-4 w-4" />
+                  Back
                 </Button>
-                <Button type="submit" variant="outline" className="w-full sm:w-auto ">
-                  Next →
+                <Button type="submit" variant="outline" className="w-full sm:w-auto gap-2">
+                  Next
+                  <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
             </form>

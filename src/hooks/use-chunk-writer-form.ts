@@ -94,11 +94,19 @@ export const useChunkWriterForm = (stepNumber: number, stepItemId?: string) => {
     try {
       updateStepData(targetStepId, data);
       
-      // Clear current step data and go back to add more steps
-      const { setDynamicStepData } = useFormStore.getState();
-      setDynamicStepData('chunkPhase', 'reader');
-      setDynamicStepData('currentStep', null);
-      setCurrentStep(4);
+      // Check if this is a chunk with partition step
+      const { dynamicStepsData, setDynamicStepData } = useFormStore.getState();
+      const currentStep = dynamicStepsData?.currentStep;
+      
+      if (currentStep?.type === 'C') {
+        // Go to partition phase for chunk with partition
+        setDynamicStepData('chunkPhase', 'partition');
+      } else {
+        // Clear current step data and go back to add more steps
+        setDynamicStepData('chunkPhase', 'reader');
+        setDynamicStepData('currentStep', null);
+        setCurrentStep(4);
+      }
     } catch (error) {
       console.error('Error submitting chunk writer configuration');
       throw error;

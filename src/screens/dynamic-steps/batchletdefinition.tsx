@@ -27,7 +27,7 @@ const BatchletDefinitionScreen: React.FC<BatchletDefinitionScreenProps> = ({ ste
   const { stepItems, updateStepData } = useStepDataUpdate();
   
   const { dynamicStepsData } = useFormStore();
-  const currentStepData = dynamicStepsData.currentStep;
+  const currentStepData = dynamicStepsData?.currentStep;
   const targetStepId = currentStepData?.id || resolveTargetStepId(stepItemId, stepItems, isAddingNewStep(steps));
   const item = stepItems.find((si: StepItem) => si.id === targetStepId) || {} as Partial<StepItem>;
 
