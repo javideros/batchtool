@@ -11,21 +11,15 @@
 export const sanitizeHtml = (input: string): string => {
   if (!input) return '';
   
-  // Remove script tags and their content
-  let sanitized = input.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+  // Strip all HTML tags completely to prevent any injection
+  let sanitized = input.replace(/<[^>]*>/g, '');
   
-  // Remove dangerous attributes
-  sanitized = sanitized.replace(/\s*on\w+\s*=\s*["'][^"']*["']/gi, '');
-  sanitized = sanitized.replace(/\s*javascript\s*:/gi, '');
-  sanitized = sanitized.replace(/\s*vbscript\s*:/gi, '');
-  sanitized = sanitized.replace(/\s*data\s*:/gi, '');
+  // Remove any remaining protocol patterns completely
+  sanitized = sanitized.replace(/[a-zA-Z][a-zA-Z0-9+.-]*:/g, '');
   
-  // Remove dangerous tags
-  const dangerousTags = ['iframe', 'object', 'embed', 'form', 'input', 'textarea', 'select', 'button'];
-  dangerousTags.forEach(tag => {
-    const regex = new RegExp(`<\\/?${tag}\\b[^>]*>`, 'gi');
-    sanitized = sanitized.replace(regex, '');
-  });
+  // Remove control characters
+  // eslint-disable-next-line no-control-regex
+  sanitized = sanitized.replace(/[\x00-\x1F\x7F]/g, '');
   
   return sanitized.trim();
 };
@@ -40,9 +34,7 @@ export const sanitizeText = (input: string): string => {
   
   return input
     .replace(/[<>]/g, '') // Remove angle brackets
-    .replace(/javascript:/gi, '') // Remove javascript: protocol
-    .replace(/vbscript:/gi, '') // Remove vbscript: protocol
-    .replace(/data:/gi, '') // Remove data: protocol
+    .replace(/[a-zA-Z][a-zA-Z0-9+.-]*:/g, '') // Remove all protocol patterns
     // eslint-disable-next-line no-control-regex
     .replace(/[\x00-\x1F\x7F]/g, '') // Remove control characters
     .trim();
