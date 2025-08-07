@@ -14,8 +14,15 @@ export const sanitizeHtml = (input: string): string => {
   // Strip all HTML tags completely to prevent any injection
   let sanitized = input.replace(/<[^>]*>/g, '');
   
-  // Remove any remaining protocol patterns completely
-  sanitized = sanitized.replace(/[a-zA-Z][a-zA-Z0-9+.-]*:/g, '');
+  // Remove dangerous attributes
+  let prevSanitized;
+  do {
+    prevSanitized = sanitized;
+    sanitized = sanitized.replace(/\s*on\w+\s*=\s*["'][^"']*["']/gi, '');
+  } while (sanitized !== prevSanitized);
+  sanitized = sanitized.replace(/\s*javascript\s*:/gi, '');
+  sanitized = sanitized.replace(/\s*vbscript\s*:/gi, '');
+  sanitized = sanitized.replace(/\s*data\s*:/gi, '');
   
   // Remove control characters
   // eslint-disable-next-line no-control-regex
