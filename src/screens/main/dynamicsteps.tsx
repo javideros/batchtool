@@ -104,7 +104,7 @@ const DynamicStepFormContainer: React.FC<{
 
   return (
     <DynamicStepForm
-      form={form}
+      form={form as any}
       typeValue={typeValue}
       onSubmit={handleSubmit}
       onPrevious={handlePrevious}

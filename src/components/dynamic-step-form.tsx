@@ -4,10 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ChevronLeft, ChevronRight, Target } from 'lucide-react';
-import { UseFormReturn } from 'react-hook-form';
+import { UseFormReturn, FieldValues } from 'react-hook-form';
 
 type DynamicStepFormProps = {
-  form: UseFormReturn;
+  form: UseFormReturn<FieldValues, any, FieldValues>;
   typeValue: string;
   onSubmit: (data: any) => void;
   onPrevious: () => void;
