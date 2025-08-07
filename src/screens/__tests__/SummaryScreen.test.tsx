@@ -107,28 +107,28 @@ describe('SummaryScreen', () => {
   it('should have XML preview toggle button', () => {
     render(<SummaryScreen stepNumber={5} />)
     
-    expect(screen.getByRole('button', { name: /👁️ preview xml/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /preview xml/i })).toBeInTheDocument()
   })
 
   it('should have download XML button', () => {
     render(<SummaryScreen stepNumber={5} />)
     
-    expect(screen.getByRole('button', { name: /💾 download xml/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /download xml/i })).toBeInTheDocument()
   })
 
   it('should have copy XML button', () => {
     render(<SummaryScreen stepNumber={5} />)
     
-    expect(screen.getByRole('button', { name: /📋 copy xml/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /copy xml/i })).toBeInTheDocument()
   })
 
   it('should toggle XML preview when button clicked', async () => {
     render(<SummaryScreen stepNumber={5} />)
     
-    const previewButton = screen.getByRole('button', { name: /👁️ preview xml/i })
+    const previewButton = screen.getByRole('button', { name: /preview xml/i })
     fireEvent.click(previewButton)
     
-    expect(screen.getByRole('button', { name: /🙈 hide xml/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /hide xml/i })).toBeInTheDocument()
   })
 
   it('should display step information', () => {
@@ -142,7 +142,7 @@ describe('SummaryScreen', () => {
   it('should have complete setup button', () => {
     render(<SummaryScreen stepNumber={5} />)
     
-    expect(screen.getByRole('button', { name: /🎉 complete setup/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /complete setup/i })).toBeInTheDocument()
   })
 
   it('should show validation info section', () => {
